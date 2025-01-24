@@ -4,9 +4,11 @@ LIBFT = libft/
 
 LIBFT_A =	$(LIBFT)libft.a
 
-SRC = 
+SRC =	src/client.c \
+		src/server.c
 
-SRC_BONUS =
+BONUS_SRC =	src_bonus/client_bonus.c \
+		src_bonus/server_bonus.c 
 
 CC = cc
 
@@ -19,12 +21,12 @@ BONUS_OBJ = $(SRC_BONUS:.c=.o)
 all: $(LIBFT_A) $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) $(CC_FLAGS) $(OBJ) $(LIBFT_A) -o $(NAME)
+	@$(CC) $(CC_FLAGS) $(OBJ) $(LIBFT_A) 
 
 bonus: $(LIBFT_A) $(NAME)
 
 $(NAME): $(BONUS_OBJ)
-	@$(CC) $(CC_FLAGS) $(BONUS_OBJ) $(LIBFT_A) -o $(NAME)
+	@$(CC) $(CC_FLAGS) $(BONUS_OBJ) $(LIBFT_A)
 
 .c.o:
 	@$(CC) $(CC_FLAGS) -c $< -o $(<:.c=.o)

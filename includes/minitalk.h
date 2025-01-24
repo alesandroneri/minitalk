@@ -6,7 +6,7 @@
 /*   By: aneri-da <aneri-da@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:32:18 by aneri-da          #+#    #+#             */
-/*   Updated: 2025/01/23 13:43:01 by aneri-da         ###   ########.fr       */
+/*   Updated: 2025/01/24 15:25:52 by aneri-da         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,10 @@
 #define EXIT_SUCCESS 1
 #define EXIT_ERROR 0 
 
-#include "libft/libft.h"
+// #define SIGUSR1 1
+// #define SIGUSR2 0
+
+#include "../libft/libft.h"
 #include <unistd.h> // getpid
 #include <stdio.h> // pause, sleep, usleep, exit
 #include <signal.h> 
