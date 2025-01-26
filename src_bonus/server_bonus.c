@@ -1,0 +1,59 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aneri-da <aneri-da@student.42.rio>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/26 14:35:15 by aneri-da          #+#    #+#             */
+/*   Updated: 2025/01/26 15:14:36 by aneri-da         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/minitalk_bonus.h"
+
+static void signal_handler(int signum, siginfo_t *info, void *context)
+{
+    static int bit = 0;
+    static char c = 0;
+
+    (void)context;
+    if (signum == SIGUSR1)
+        c |= (1 << (7 - bit)); // Ajuste correto para construir o caractere
+    bit++;
+    if (bit == 8)
+    {
+        if (c == '\0')
+        {
+            ft_putchar_fd('\n', 1);
+            kill(info->si_pid, SIGUSR1); // Confirmação de recebimento para o cliente
+        }
+        else
+            write(1, &c, 1);
+        c = 0;
+        bit = 0;
+    }
+}
+
+int main(int ac, char **av)
+{
+    struct sigaction sa = {0};
+
+    sa.sa_sigaction = signal_handler;
+    sa.sa_flags = SA_SIGINFO;
+    sigemptyset(&sa.sa_mask);
+    if (ac > 1)
+    {
+        ft_putendl_fd("Error invalid number of arguments.", 2);
+        return (EXIT_ERROR);
+    }
+    if (sigaction(SIGUSR1, &sa, NULL) == -1 || sigaction(SIGUSR2, &sa, NULL) == -1)
+    {
+        ft_putendl_fd("Error sigaction failed.", 2);
+        return(EXIT_ERROR);
+    }
+    ft_printf("Server PID: %d\n", getpid());
+    while (1)
+        pause();
+    return (EXit_SUCCESS);
+}
