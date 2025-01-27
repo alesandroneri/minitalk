@@ -6,45 +6,15 @@
 /*   By: aneri-da <aneri-da@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:31:35 by aneri-da          #+#    #+#             */
-/*   Updated: 2025/01/26 15:37:33 by aneri-da         ###   ########.fr       */
+/*   Updated: 2025/01/27 18:57:21 by aneri-da         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minitalk.h"
 
-void send_signal(int pid, unsigned char c)
+int	check_arguments(int ac, char **av)
 {
-    int bit = 7;
-
-    // Envia os bits do caractere, um por um
-    while (bit >= 0)
-    {
-        if (c & (1 << bit)) // Se o bit atual é 1, envia SIGUSR1
-        {
-            if (kill(pid, SIGUSR1) == -1)
-            {
-                perror("Error sending SIGUSR1");
-                exit(EXIT_FAILURE);
-            }
-        }
-        else // Caso contrário, envia SIGUSR2
-        {
-            if (kill(pid, SIGUSR2) == -1)
-            {
-                perror("Error sending SIGUSR2");
-                exit(EXIT_FAILURE);
-            }
-        }
-        bit--;
-        usleep(100); // Pequeno delay para evitar perda de sinais
-    }
-}
-
-int	main(int ac, char **av)
-{
-	int		server_pid;
-	int		i;
-	char	*msg;
+	char	*pid;
 
 	if (ac != 3)
 	{
@@ -56,25 +26,60 @@ int	main(int ac, char **av)
 		ft_putendl_fd("Error invalid pid or invalid message.", 2);
 		return (EXIT_ERROR);
 	}
-	i = -1;
-	while (av[1][++i] != '\0')
-		if (!ft_isdigit(av[1][i]))
+	pid = av[1];
+	while (*av[1])
+	{
+		if (!ft_isdigit(*av[1]))
 		{
 			ft_putendl_fd("Error invalid pid.", 2);
 			return (EXIT_ERROR);
 		}
-	server_pid = ft_atoi(av[1]);
-	if (server_pid < 0 || !server_pid)
-	{
-		ft_putendl_fd("Error invalid pid.", 2);
-		return (EXIT_ERROR);
+		av[1]++;
 	}
+	return (ft_atoi(pid));
+}
+
+void	send_signal(int pid, unsigned char c)
+{
+	int	bit;
+
+	bit = 7;
+	while (bit >= 0)
+	{
+		if (c & (1 << bit))
+		{
+			if (kill(pid, SIGUSR1) == -1)
+			{
+				perror("Error sending SIGUSR1");
+				exit(EXIT_ERROR);
+			}
+		}
+		else
+		{
+			if (kill(pid, SIGUSR2) == -1)
+			{
+				perror("Error sending SIGUSR2");
+				exit(EXIT_ERROR);
+			}
+		}
+		bit--;
+		usleep(1000);
+	}
+}
+
+int	main(int ac, char **av)
+{
+	int		server_pid;
+	char	*msg;
+	int		i;
+
+	server_pid = check_arguments(ac, av);
+	if (server_pid <= 0)
+		return (EXIT_ERROR);
 	msg = av[2];
-	while (*msg)
-    {
-        send_signal(server_pid, *msg); // Envia cada caractere da mensagem
-        msg++;
-    }
+	i = -1;
+	while (msg[++i] != '\0')
+		send_signal(server_pid, msg[i]);
 	send_signal(server_pid, '\0');
 	return (EXIT_SUCCESS);
 }

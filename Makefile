@@ -7,26 +7,40 @@ LIBFT_A =	$(LIBFT)libft.a
 SRC =	src/client.c \
 		src/server.c
 
-BONUS_SRC =	src_bonus/client_bonus.c \
-		src_bonus/server_bonus.c 
+SRC_BONUS =	src_bonus/client_bonus.c \
+			src_bonus/server_bonus.c
+
+CLIENT = client
+
+SERVER = server
+
+CLIENT_BONUS = client_bonus
+
+SERVER_BONUS = server_bonus
 
 CC = cc
 
 CC_FLAGS = -g -Wall -Wextra -Werror 
 
-OBJ = $(SRC:.c=.o)
-
 BONUS_OBJ = $(SRC_BONUS:.c=.o)
 
-all: $(LIBFT_A) $(NAME)
+OBJ = $(SRC:.c=.o)
 
-$(NAME): $(OBJ)
-	@$(CC) $(CC_FLAGS) $(OBJ) $(LIBFT_A) 
+all: $(LIBFT_A) $(CLIENT) $(SERVER)
 
-bonus: $(LIBFT_A) $(NAME)
+$(CLIENT): src/client.o
+	@$(CC) $(CC_FLAGS) src/client.o $(LIBFT_A) -o $(CLIENT)
 
-$(NAME): $(BONUS_OBJ)
-	@$(CC) $(CC_FLAGS) $(BONUS_OBJ) $(LIBFT_A)
+$(SERVER): src/server.o
+	@$(CC) $(CC_FLAGS) src/server.o $(LIBFT_A) -o $(SERVER)
+
+bonus: $(LIBFT_A) $(CLIENT_BONUS) $(SERVER_BONUS)
+
+$(CLIENT_BONUS): src_bonus/client_bonus.o
+	@$(CC) $(CC_FLAGS) src_bonus/client_bonus.o $(LIBFT_A) -o $(CLIENT_BONUS)
+
+$(SERVER_BONUS): src_bonus/server_bonus.o
+	@$(CC) $(CC_FLAGS) src_bonus/server_bonus.o $(LIBFT_A) -o $(SERVER_BONUS)
 
 .c.o:
 	@$(CC) $(CC_FLAGS) -c $< -o $(<:.c=.o)
@@ -35,26 +49,17 @@ $(LIBFT_A):
 	@make -C $(LIBFT)
 
 clean:
-	@rm -f $(OBJ) $(BONUS_OBJ)
+	@rm -rf $(OBJ)
+	@rm -rf $(BONUS_OBJ)
 	@make clean -C $(LIBFT)
 
 fclean: clean
-	@rm -rf $(NAME)
+	@rm -rf $(SERVER) $(CLIENT) $(CLIENT_BONUS) $(SERVER_BONUS)
 	@make fclean -C $(LIBFT)
 
 re: fclean all
 
-r:$(NAME)
-	clear
-	@echo "Input: ${var}"
-	@./$(NAME) ${var}
-
-v: $(NAME)
-	clear
-	@echo "input: ${var}\n"
-	@valgrind -s --track-origins=yes  --leak-check=full --show-leak-kinds=all ./$(NAME) ${var}
-
 c:
 	@find . -type f -iname "*.c" -exec grep "//" {} +
 
-.PHONY: all clean fclean re v c bonus t
+.PHONY: all clean fclean re c bonus 
