@@ -6,7 +6,7 @@
 /*   By: aneri-da <aneri-da@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:31:35 by aneri-da          #+#    #+#             */
-/*   Updated: 2025/01/27 18:57:21 by aneri-da         ###   ########.fr       */
+/*   Updated: 2025/01/28 13:10:17 by aneri-da         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	send_signal(int pid, unsigned char c)
 		{
 			if (kill(pid, SIGUSR1) == -1)
 			{
-				perror("Error sending SIGUSR1");
+				ft_putendl_fd("Error sending SIGUSR1", 2);
 				exit(EXIT_ERROR);
 			}
 		}
@@ -58,7 +58,7 @@ void	send_signal(int pid, unsigned char c)
 		{
 			if (kill(pid, SIGUSR2) == -1)
 			{
-				perror("Error sending SIGUSR2");
+				ft_putendl_fd("Error sending SIGUSR2", 2);
 				exit(EXIT_ERROR);
 			}
 		}

@@ -6,7 +6,7 @@
 /*   By: aneri-da <aneri-da@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 14:36:22 by aneri-da          #+#    #+#             */
-/*   Updated: 2025/01/27 19:31:20 by aneri-da         ###   ########.fr       */
+/*   Updated: 2025/01/28 13:11:44 by aneri-da         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ void	send_signal(int pid, unsigned char c)
 {
 	int	bit;
 
-	bit = 7;
-	while (bit >= 0)
+	bit = 8;
+	while (--bit >= 0)
 	{
 		if (c & (1 << bit))
 		{
@@ -64,7 +64,6 @@ void	send_signal(int pid, unsigned char c)
 			}
 			usleep(500);
 		}
-		bit--;
 		usleep(1500);
 	}
 }
